@@ -5,6 +5,9 @@ FROM --platform=$BUILDPLATFORM maven:3.9.16-eclipse-temurin-25 AS build
 WORKDIR /build
 COPY pom.xml .
 RUN mvn -B dependency:go-offline
+# Checkstyle is bound to validate, which mvn package runs: without the ruleset
+# the in-image build fails even though CI's mvn verify passed outside it.
+COPY checkstyle.xml .
 COPY src ./src
 RUN mvn -B package -DskipTests
 
