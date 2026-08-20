@@ -54,6 +54,39 @@
 
     <build>
         <plugins>
+            <!-- The lint gate. Bound to validate so it runs before compile: the
+                 pipeline's `mvn -B verify` fails on a violation without having
+                 spent time building. Rules are in checkstyle.xml. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.6.0</version>
+                <dependencies>
+                    <!-- The plugin's default Checkstyle is 9.3, the last release that
+                         supported Java 8; it cannot parse records, sealed types or
+                         pattern matching. A lint gate that errors on valid modern
+                         Java is worse than no gate, so pin a current engine. -->
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>10.21.0</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>lint</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
