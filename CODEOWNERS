@@ -1,0 +1,3 @@
+# Ownership of record. bin/scorecard in the platform repository reads this file;
+# a service with no CODEOWNERS is a red row in CATALOG.md.
+* @itayna
